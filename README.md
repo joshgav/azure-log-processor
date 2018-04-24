@@ -1,3 +1,5 @@
+![Azure Logs Processor](./doc/images/eh-demo.png)
+
 # To run
 
 1. Fill in `.env.tpl` and move to `.env`.
