@@ -3,6 +3,7 @@
 TOOLS=$(dirname "${BASH_SOURCE[0]}")
 ROOT=$TOOLS/..
 
+echo importing env vars from .env
 set -o allexport
 source .env
 set +o allexport
@@ -47,6 +48,22 @@ eh_authzrule_id=$(az eventhubs namespace authorization-rule create \
     --query id --output tsv \
 )
 echo created: $eh_authzrule_id
+
+eh_sas_key_name=$(az eventhubs namespace authorization-rule keys list \
+    --name $eventhub_authzrule_name \
+    --namespace-name $namespace_name \
+    --resource-group $eh_group_name \
+    --query keyName --output tsv \
+)
+echo SAS Key Name: $eh_sas_key_name
+
+eh_sas_key_value=$(az eventhubs namespace authorization-rule keys list \
+    --name $eventhub_authzrule_name \
+    --namespace-name $namespace_name \
+    --resource-group $eh_group_name \
+    --query primaryKey --output tsv \
+)
+echo SAS Key Value: $eh_sas_key_value
 
 eh_hub_id=$(az eventhubs eventhub create \
     --resource-group $eh_group_name \
@@ -123,19 +140,25 @@ sql_server_id=$(az sql server create \
 )
 echo created: $sql_server_id
 
-az sql server firewall-rule create \
+rule01_id=$(az sql server firewall-rule create \
     --name 'unsafe-allow-all' \
     --server $sql_server_name \
     --resource-group $sql_group_name \
     --start-ip-address '0.0.0.0' \
-    --end-ip-address '255.255.255.255'
+    --end-ip-address '255.255.255.255' \
+    --query id --output tsv \
+)
+echo created: $rule01_id
 
-az sql server firewall-rule create \
+rule02_id=$(az sql server firewall-rule create \
     --name 'allow-azure' \
     --server $sql_server_name \
     --resource-group $sql_group_name \
     --start-ip-address '0.0.0.0' \
-    --end-ip-address '0.0.0.0'
+    --end-ip-address '0.0.0.0' \
+    --query id --output tsv \
+)
+echo created: $rule02_id
 
 sql_db_id=$(az sql db create \
     --name $sql_db_name \
@@ -143,6 +166,7 @@ sql_db_id=$(az sql db create \
     --server $sql_server_name \
     --query id --output tsv \
 )
+echo created: $sql_db_id
 
 go run $ROOT/tools/az_diag_settings.go \
     -settingsName ${sql_diag_settings_name} \
