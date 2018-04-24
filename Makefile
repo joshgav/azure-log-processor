@@ -11,6 +11,6 @@ dep: $(BASE)
 	cd $(BASE) && dep ensure
 
 deploy:
-	$(BASE)/test/infrastructure/deploy.sh
+	$(BASE)/tools/deploy.sh
 
 .PHONY: build receiver dep deploy

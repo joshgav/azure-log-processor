@@ -26,10 +26,10 @@ func init() {
 		log.Fatalf("Error loading .env file: %s\n", err)
 	}
 
-	groupName = os.Getenv("EH_GROUP_NAME")
-	namespaceName = os.Getenv("EH_NAMESPACE_NAME")
-	hubName = os.Getenv("EH_HUB_NAME")
-	hubKey = os.Getenv("EH_HUB_KEY")
+	groupName = os.Getenv("EVENTHUB_GROUP_NAME")
+	namespaceName = os.Getenv("EVENTHUB_NAMESPACE_NAME")
+	hubName = os.Getenv("EVENTHUB_HUB_NAME")
+	hubKey = os.Getenv("EVENTHUB_HUB_KEY")
 }
 
 func main() {
