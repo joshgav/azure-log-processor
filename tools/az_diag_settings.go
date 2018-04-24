@@ -32,7 +32,7 @@ func init() {
 
 	subID = os.Getenv("AZURE_SUBSCRIPTION_ID")
 	ehHubName = os.Getenv("EVENTHUB_HUB_NAME")
-	ehAuthzRuleID = os.Getenv("EVENTHUB_AUTHZ_RULE_ID")
+	ehAuthzRuleID = os.Getenv("EVENTHUB_SAS_POLICY_ID")
 
 	flag.StringVar(&settingsName, "settingsName", "", "name for settings object")
 	flag.StringVar(&resourceURI, "resourceURI", "", "full URI of resource")

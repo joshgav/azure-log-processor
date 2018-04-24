@@ -1,5 +1,6 @@
 #! /bin/bash
 
+# globals
 TOOLS=$(dirname "${BASH_SOURCE[0]}")
 ROOT=$TOOLS/..
 
@@ -8,16 +9,15 @@ set -o allexport
 source .env
 set +o allexport
 
-# globals
 location=westus2
 group_name=$EVENTHUB_GROUP_NAME
 cleanup=0
 
 # event hubs
-eh_group_name=$group_name
+eh_group_name=$EVENTHUB_GROUP_NAME
 namespace_name=$EVENTHUB_NAMESPACE_NAME
 eventhub_name=$EVENTHUB_HUB_NAME
-eventhub_authzrule_name=diag-log-send
+eventhub_authzrule_name=$EVENTHUB_SAS_POLICY_NAME
 eventhub_diag_settings_name=eventhubs-diag-settings
 
 group_exists=$(az group exists -n $eh_group_name -o tsv)
