@@ -10,7 +10,7 @@ receiver: dep
 dep: $(BASE)
 	cd $(BASE) && dep ensure
 
-deploy:
+deploy: dep
 	$(BASE)/tools/deploy.sh
 
 .PHONY: build receiver dep deploy

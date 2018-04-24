@@ -43,7 +43,7 @@ eh_authzrule_id=$(az eventhubs namespace authorization-rule create \
     --name $eventhub_authzrule_name \
     --namespace-name $namespace_name \
     --resource-group $eh_group_name \
-    --rights 'Manage' \
+    --rights Manage Send Listen \
     --query id --output tsv \
 )
 echo created: $eh_authzrule_id
