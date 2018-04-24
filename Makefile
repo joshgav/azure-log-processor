@@ -1,11 +1,13 @@
-PACKAGE   = github.com/joshgav/go-eh-demo
+PACKAGE   = github.com/joshgav/azure-log-processor
 BASE      = $(GOPATH)/src/$(PACKAGE)
 NODE_PATH = test/receiver-node/
 GO_PATH   = test/receiver-go/
+PYTHON_PATH = test/receiver-py/
 
 GO = go
 NODE = node
 NPM = npm
+PYTHON = python
 
 deploy: dep
 	$(BASE)/tools/deploy.sh
@@ -19,6 +21,8 @@ receiver-go: dep
 
 receiver-node: npm
 
+receiver-py: pip
+
 dep: $(BASE)
 	go get -u github.com/golang/dep
 	cd $(BASE) && dep ensure
@@ -26,4 +30,6 @@ dep: $(BASE)
 npm: $(BASE)
 	cd $(BASE)/$(NODE_PATH) && $(NPM) install
 
-.PHONY: build receiver dep deploy
+pip: $(BASE)
+
+.PHONY: deploy build receivers receiver-go receiver-node receiver-py dep npm pip
