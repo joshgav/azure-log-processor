@@ -1,4 +1,5 @@
 .env
+env
 dist/
 vendor/
 node_modules
