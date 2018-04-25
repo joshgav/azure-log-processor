@@ -47,7 +47,7 @@ func main() {
 	}
 
 	for _, partition := range hubInfo.PartitionIDs {
-		h.Receive(ctx, partition, handler, eh.ReceiveWithLatestOffset())
+		h.Receive(ctx, partition, handler, eh.ReceiveWithStartingOffset("-1"))
 	}
 	cancel()
 
