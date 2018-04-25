@@ -32,19 +32,19 @@ async def pump(pid, receiver, timeout):
             total += size
             iteration += 1
             if size == 0:
-                print("{}: No events received, queue size {}, delivered {}".format(
+                print("Partition {}: No events received, queue size {}, delivered {}".format(
                     pid,
                     receiver.queue_size,
                     total))
             elif iteration >= 80:
                 iteration = 0
-                print("{}: total received {}, last sn={}, last offset={}".format(
-                            pid,
-                            total,
-                            batch[-1].sequence_number,
-                            batch[-1].offset))
+                print("Partition {}: total received {}, last sn={}, last offset={}".format(
+                    pid,
+                    total,
+                    batch[-1].sequence_number,
+                    batch[-1].offset))
             condition = (time.time() < deadline) if timeout else True
-        print("{}: total received {}".format(pid, total))
+        print("Partition {}: total received {}".format(pid, total))
 
     except Exception as e:
         print("Partition {} receiver failed: {}".format(pid, e))
@@ -59,18 +59,17 @@ if __name__ == '__main__':
     hub_name = os.environ["EVENTHUB_HUB_NAME"]
     consumer_group = "$default"
     offset = Offset("-1")
-    duration = None
+    duration = None  # Optional timeout in seconds
 
     conn_string = "Endpoint=sb://{}.servicebus.windows.net/;SharedAccessKeyName={};SharedAccessKey={}".format(
         namespace_name,
         saspolicy_name,
-        saspolicy_secret
-    )
+        saspolicy_secret)
     client = EventHubClientAsync.from_connection_string(
             conn_string,
             eventhub=hub_name)
     try:
-        eh_info = loop.run_until_complete(client.get_eventhub_info_async)
+        eh_info = loop.run_until_complete(client.get_eventhub_info_async())
         partition_ids = eh_info['partition_ids']
 
         pumps = []
