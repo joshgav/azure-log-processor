@@ -24,10 +24,11 @@
   name = "github.com/Azure/azure-event-hubs-go"
   packages = [
     ".",
+    "internal",
     "mgmt"
   ]
-  revision = "4ae25b9011a4ca509a7213b66d824ca5db5cd822"
-  version = "v0.2.0"
+  revision = "892a94aab96d197f3cfca540f71d76c7de5a16f6"
+  version = "v0.2.1"
 
 [[projects]]
   name = "github.com/Azure/azure-sdk-for-go"
@@ -35,8 +36,8 @@
     "services/monitor/mgmt/2018-03-01/insights",
     "version"
   ]
-  revision = "060bf9b93ad98bc41813ca23f5328843f6c0e90b"
-  version = "v15.2.0"
+  revision = "fad8443a79b0e755c18c3bec29a8d2bedab0b421"
+  version = "v15.3.0"
 
 [[projects]]
   name = "github.com/Azure/go-autorest"
@@ -99,7 +100,7 @@
     "pkcs12",
     "pkcs12/internal/rc2"
   ]
-  revision = "2b6c08872f4b66da917bb4ce98df4f0307330f78"
+  revision = "b0697eccbea9adec5b7ba8008f4c33d98d733388"
 
 [[projects]]
   branch = "master"
