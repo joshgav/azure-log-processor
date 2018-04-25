@@ -28,12 +28,14 @@ async def pump(pid, receiver, timeout):
         while condition:
             batch = await receiver.receive(timeout=10)
             total += len(batch)
-            print("Partition {}: total received {}, last sn={}, last offset={}".format(
-                pid,
-                total,
-                batch[-1].sequence_number,
-                batch[-1].offset))
+            # print("Partition {}: total received {}, last sn={}, last offset={}".format(
+            #     pid,
+            #     total,
+            #     batch[-1].sequence_number,
+            #     batch[-1].offset))
             condition = (time.time() < deadline) if timeout else True
+            for message in batch:
+                print("{}".format(list(message.body)[0])
         print("Partition {}: total received {}".format(pid, total))
 
     except Exception as e:
