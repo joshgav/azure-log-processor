@@ -7,9 +7,9 @@ const { EventHubClient, EventPosition } = require('azure-event-hubs');
 const partitionCount = {};
 
 async function main() {
-  const { namespaceName, saslpolicyName, saslpolicySecret, hubName } = createConfig();
+  const { namespaceName, saspolicyName, saspolicySecret, hubName } = createConfig();
   const connectionString = `Endpoint=sb://${namespaceName}.servicebus.windows.net/;` +
-    `SharedAccessKeyName=${saslpolicyName};SharedAccessKey=${saslpolicySecret}`
+    `SharedAccessKeyName=${saspolicyName};SharedAccessKey=${saspolicySecret}`
   const client = EventHubClient.createFromConnectionString(connectionString, hubName);
   console.log('Going to listen for events, CTRL+C to exit')
   const partitionIds = await client.getPartitionIds();
@@ -24,7 +24,7 @@ async function main() {
     };
     const options = { eventPosition: EventPosition.fromStart() };
     // const options = { eventPosition: EventPosition.fromEnqueuedTime(Date.now()) };
-    const receiveHandler = client.receive(partitionId, onMessage, onError, options);
+    client.receive(partitionId, onMessage, onError, options);
   }
 }
 
@@ -37,8 +37,8 @@ main().catch((err) => {
 function createConfig() {
   return {
     namespaceName: process.env["EVENTHUB_NAMESPACE_NAME"],
-    saslpolicyName: process.env["EVENTHUB_KEY_NAME"],
-    saslpolicySecret: process.env["EVENTHUB_KEY_VALUE"],
+    saspolicyName: process.env["EVENTHUB_KEY_NAME"],
+    saspolicySecret: process.env["EVENTHUB_KEY_VALUE"],
     hubName: process.env["EVENTHUB_HUB_NAME"]
   };
 }
