@@ -35,7 +35,7 @@ async def pump(pid, receiver, timeout):
             #     batch[-1].offset))
             condition = (time.time() < deadline) if timeout else True
             for message in batch:
-                print("{}".format(list(message.body)[0])
+                print("{}".format(list(message.body)[0]))
         print("Partition {}: total received {}".format(pid, total))
 
     except Exception as e:
