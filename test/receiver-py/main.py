@@ -9,47 +9,82 @@ import os
 import sys
 import logging
 import time
+import asyncio
 
-from urllib.parse import quote_plus
 from dotenv import load_dotenv, find_dotenv
-from azure.eventhub import EventHubClient, Receiver, Offset
+from azure.eventhub import Offset
+from azure.eventhub.async import EventHubClientAsync
 
-# address format: "amqps://<URL-encoded-SAS-policy>:<URL-encoded-SAS-key>@<mynamespace>.servicebus.windows.net/myeventhub"
-load_dotenv(find_dotenv())
-SAS_KEY_NAME = quote_plus(os.environ.get("EVENTHUB_SAS_POLICY_NAME"))
-SAS_KEY_VALUE = quote_plus(os.environ.get('EVENTHUB_KEY_VALUE'))
-NAMESPACE_NAME = os.environ.get('EVENTHUB_NAMESPACE_NAME')
-HUB_NAME = os.environ.get('EVENTHUB_HUB_NAME')
 
-ADDRESS = 'amqps://{0}:{1}@{2}.servicebus.windows.net/{3}'.format(
-	SAS_KEY_NAME, SAS_KEY_VALUE, NAMESPACE_NAME, HUB_NAME)
+async def pump(pid, receiver, timeout):
+    total = 0
+    iteration = 0
+    if timeout:
+        deadline = time.time() + timeout
+        condition = time.time() < deadline
+    else:
+        condition = True
 
-# SAS policy and key are not required if they are encoded in the URL
-# USER = SAS_KEY_NAME
-# KEY = SAS_KEY_VALUE
-CONSUMER_GROUP = "$default"
-OFFSET = Offset("-1")
-PARTITION = "0"
+    try:
+        while condition:
+            batch = await receiver.receive(timeout=5)
+            size = len(batch)
+            total += size
+            iteration += 1
+            if size == 0:
+                print("{}: No events received, queue size {}, delivered {}".format(
+                    pid,
+                    receiver.queue_size,
+                    total))
+            elif iteration >= 80:
+                iteration = 0
+                print("{}: total received {}, last sn={}, last offset={}".format(
+                            pid,
+                            total,
+                            batch[-1].sequence_number,
+                            batch[-1].offset))
+            condition = (time.time() < deadline) if timeout else True
+        print("{}: total received {}".format(pid, total))
 
-total = 0
-last_sn = -1
-last_offset = "-1"
-client = EventHubClient(ADDRESS, debug=False)
-try:
-    receiver = client.add_receiver(CONSUMER_GROUP, PARTITION, prefetch=5000, offset=OFFSET)
-    client.run()
-    start_time = time.time()
-    for event_data in receiver.receive(timeout=100):
-        last_offset = event_data.offset
-        last_sn = event_data.sequence_number
-        total += 1
+    except Exception as e:
+        print("Partition {} receiver failed: {}".format(pid, e))
 
-    end_time = time.time()
-    client.stop()
-    run_time = end_time - start_time
-    print("Received {} messages in {} seconds".format(total, run_time))
 
-except KeyboardInterrupt:
-    pass
-finally:
-    client.stop()
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    load_dotenv(find_dotenv())
+    namespace_name = os.environ["EVENTHUB_NAMESPACE_NAME"]
+    saspolicy_name = os.environ["EVENTHUB_KEY_NAME"]
+    saspolicy_secret = os.environ["EVENTHUB_KEY_VALUE"]
+    hub_name = os.environ["EVENTHUB_HUB_NAME"]
+    consumer_group = "$default"
+    offset = Offset("-1")
+    duration = None
+
+    conn_string = "Endpoint=sb://{}.servicebus.windows.net/;SharedAccessKeyName={};SharedAccessKey={}".format(
+        namespace_name,
+        saspolicy_name,
+        saspolicy_secret
+    )
+    client = EventHubClientAsync.from_connection_string(
+            conn_string,
+            eventhub=hub_name)
+    try:
+        eh_info = loop.run_until_complete(client.get_eventhub_info_async)
+        partition_ids = eh_info['partition_ids']
+
+        pumps = []
+        for pid in partition_ids:
+            receiver = client.add_async_receiver(
+                consumer_group=consumer_group,
+                partition=pid,
+                offset=offset,
+                prefetch=5000)
+            pumps.append(pump(pid, receiver, duration))
+        loop.run_until_complete(client.run_async())
+        loop.run_until_complete(asyncio.gather(*pumps))
+    except:
+        raise
+    finally:
+        loop.run_until_complete(client.stop_async())
+        loop.close()
