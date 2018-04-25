@@ -3,9 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
+
+	"github.com/uber/jaeger-client-go"
+	"github.com/uber/jaeger-client-go/config"
+	jaegerlog "github.com/uber/jaeger-client-go/log"
 
 	sas "github.com/Azure/azure-amqp-common-go/sas"
 	eh "github.com/Azure/azure-event-hubs-go"
@@ -33,6 +38,8 @@ func init() {
 }
 
 func main() {
+	closer := setupTracing()
+	defer closer.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 
 	h := hub()
@@ -67,4 +74,30 @@ func hub() *eh.Hub {
 	}
 
 	return hub
+}
+
+func setupTracing() io.Closer {
+	// Sample configuration for testing. Use constant sampling to sample every trace
+	// and enable LogSpan to log every span via configured Logger.
+	cfg := config.Configuration{
+		Sampler: &config.SamplerConfig{
+			Type:  jaeger.SamplerTypeConst,
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LocalAgentHostPort: "0.0.0.0:6831",
+		},
+	}
+
+	// Example logger and metrics factory. Use github.com/uber/jaeger-client-go/log
+	// and github.com/uber/jaeger-lib/metrics respectively to bind to real logging and metrics
+	// frameworks.
+	jLogger := jaegerlog.StdLogger
+
+	closer, _ := cfg.InitGlobalTracer(
+		"ehtests",
+		config.Logger(jLogger),
+	)
+
+	return closer
 }
