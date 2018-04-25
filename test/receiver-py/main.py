@@ -18,7 +18,6 @@ from azure.eventhub.async import EventHubClientAsync
 
 async def pump(pid, receiver, timeout):
     total = 0
-    iteration = 0
     if timeout:
         deadline = time.time() + timeout
         condition = time.time() < deadline
@@ -27,22 +26,13 @@ async def pump(pid, receiver, timeout):
 
     try:
         while condition:
-            batch = await receiver.receive(timeout=5)
-            size = len(batch)
-            total += size
-            iteration += 1
-            if size == 0:
-                print("Partition {}: No events received, queue size {}, delivered {}".format(
-                    pid,
-                    receiver.queue_size,
-                    total))
-            elif iteration >= 80:
-                iteration = 0
-                print("Partition {}: total received {}, last sn={}, last offset={}".format(
-                    pid,
-                    total,
-                    batch[-1].sequence_number,
-                    batch[-1].offset))
+            batch = await receiver.receive(timeout=10)
+            total += len(batch)
+            print("Partition {}: total received {}, last sn={}, last offset={}".format(
+                pid,
+                total,
+                batch[-1].sequence_number,
+                batch[-1].offset))
             condition = (time.time() < deadline) if timeout else True
         print("Partition {}: total received {}".format(pid, total))
 
