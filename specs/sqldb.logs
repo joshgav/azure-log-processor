@@ -1,0 +1,11 @@
+[
+  { "category": "QueryStoreRuntimeStatistics", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "QueryStoreWaitStatistics", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "Errors", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "DatabaseWaitStatistics", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "Timeouts", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "Blocks", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "SQLInsights", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "Audit", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "SQLSecurityAuditEvents", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } }
+]

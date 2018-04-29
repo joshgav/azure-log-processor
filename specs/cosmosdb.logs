@@ -1,0 +1,4 @@
+[
+  { "category": "DataPlaneRequests", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } },
+  { "category": "MongoRequests", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } }
+]

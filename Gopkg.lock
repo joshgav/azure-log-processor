@@ -31,24 +31,12 @@
   version = "v0.2.1"
 
 [[projects]]
-  name = "github.com/Azure/azure-sdk-for-go"
-  packages = [
-    "services/monitor/mgmt/2018-03-01/insights",
-    "version"
-  ]
-  revision = "fad8443a79b0e755c18c3bec29a8d2bedab0b421"
-  version = "v15.3.0"
-
-[[projects]]
   name = "github.com/Azure/go-autorest"
   packages = [
     "autorest",
     "autorest/adal",
     "autorest/azure",
-    "autorest/azure/auth",
-    "autorest/date",
-    "autorest/to",
-    "autorest/validation"
+    "autorest/date"
   ]
   revision = "1ff28809256a84bb6966640ff3d0371af82ccba4"
   version = "v10.6.2"
@@ -58,12 +46,6 @@
   packages = ["."]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/dimchansky/utfbom"
-  packages = ["."]
-  revision = "6c6132ff69f0f6c088739067407b5d32c52e1d0f"
 
 [[projects]]
   name = "github.com/joho/godotenv"
@@ -120,6 +102,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "00d480ca41ab111cef7d0ef6d7c8767e167d5d8fc1a7e7c05ef6ade2a175dbee"
+  inputs-digest = "3ac789946b7e1fc46f635ab0cfb9fed1293d25c84e78195204bc1647b94f9309"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -10,7 +10,7 @@ NPM = npm
 PYTHON = python
 
 deploy: dep
-	$(BASE)/tools/deploy.sh
+	$(BASE)/tools/deploy/deploy.sh
 
 build: receivers
 

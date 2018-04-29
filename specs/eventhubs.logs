@@ -1,0 +1,26 @@
+[
+    {
+        "category": "OperationalLogs",
+        "enabled": true,
+		"retentionPolicy": {
+			"enabled": true,
+			"days": 7
+		}
+    },
+    {
+        "category": "ArchiveLogs",
+        "enabled": true,
+		"retentionPolicy": {
+			"enabled": true,
+			"days": 7
+		}
+    },
+    {
+        "category": "AutoScaleLogs",
+        "enabled": true,
+		"retentionPolicy": {
+			"enabled": true,
+			"days": 7
+		}
+    }
+]

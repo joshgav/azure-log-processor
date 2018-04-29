@@ -1,0 +1,3 @@
+[
+  { "category": "AllMetrics", "enabled": true, "retentionPolicy": { "enabled": true, "days": 7 } }
+]
