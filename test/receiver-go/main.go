@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	sas "github.com/Azure/azure-amqp-common-go/sas"
 	eh "github.com/Azure/azure-event-hubs-go"
@@ -32,8 +31,16 @@ func init() {
 	hubKey = os.Getenv("EVENTHUB_HUB_KEY")
 }
 
+func handler(ctx context.Context, event *eh.Event) error {
+	log.Printf("MessageID: %s\n", string(event.ID))
+	// log.Printf("MessageProperties: %s\n", string(event.Properties))
+	log.Printf("MessageData: %s\n\n", string(event.Data))
+	return nil
+}
+
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	h := hub()
 	hubInfo, err := h.GetRuntimeInformation(ctx)
@@ -41,15 +48,9 @@ func main() {
 		log.Fatalf("failed to get hub info: %s\n", err)
 	}
 
-	handler := func(ctx context.Context, event *eh.Event) error {
-		log.Println(string(event.Data))
-		return nil
-	}
-
 	for _, partition := range hubInfo.PartitionIDs {
 		h.Receive(ctx, partition, handler, eh.ReceiveWithStartingOffset("-1"))
 	}
-	cancel()
 
 	fmt.Printf("Received events will be printed. Press <enter> to exit.\n")
 	fmt.Scanln()
