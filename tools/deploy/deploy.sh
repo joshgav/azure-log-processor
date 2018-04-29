@@ -13,6 +13,7 @@ set -o allexport
 source .env
 set +o allexport
 
+
 # event hubs
 echo creating Event Hubs namespace, sas_policy, hub, diag_settings
 eh_group_name=$EVENTHUB_GROUP_NAME
@@ -99,6 +100,25 @@ else
     echo found: $eh_hub_id
 fi
 
+# for use in other diag settings rules
+export MONITOR_HUB_NAME=$eh_hub_name
+export MONITOR_SASPOLICY_ID=$eh_authzrule_id
+
+# ARM activity log
+all_az_locations=$(az account list-locations --output tsv --query '[].name' |
+                    paste --serial --delimiters=" " -)
+all_az_categories=$(echo Write Delete Action)
+
+az monitor log-profiles create \
+    --name 'default-log-profile' \
+    --location $DEFAULT_LOCATION \
+    --locations $all_az_locations \
+    --categories $all_az_categories \
+    --service-bus-rule-id $MONITOR_SASPOLICY_ID \
+    --days "7" \
+    --enabled "true" \
+    --output tsv --query id 
+
 eh_logs_json=$(cat "$ROOT_DIR/specs/eventhubs.logs")
 eh_metrics_json=$(cat "$ROOT_DIR/specs/eventhubs.metrics")
 
@@ -109,15 +129,12 @@ metrics_json=$eh_metrics_json
 az monitor diagnostic-settings create \
     --resource $resource_uri \
     --name $settings_name \
-    --event-hub $eh_hub_name \
-    --event-hub-rule $eh_authzrule_id \
+    --event-hub $MONITOR_HUB_NAME \
+    --event-hub-rule $MONITOR_SASPOLICY_ID \
     --logs "$logs_json" \
     --metrics "$metrics_json" \
     --query id --output tsv
 
-# for use in other diag settings rules
-export MONITOR_HUB_NAME=$eh_hub_name
-export MONITOR_SASPOLICY_ID=$eh_authzrule_id
 
 # sql
 DEFAULT_LOCATION=westus2 $DEPLOY_TOOLS_DIR/sql.sh
