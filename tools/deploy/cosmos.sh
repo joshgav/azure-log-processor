@@ -16,9 +16,10 @@ cosmos_account_id=$(az cosmosdb show \
     --name $cosmos_account_name \
     --resource-group $cosmos_group_name \
     --query id --output tsv \
+    2> /dev/null \
     )
 
-if [ -z "cosmos_account_id" ]; then
+if [ -z "$cosmos_account_id" ]; then
     cosmos_account_id=$(az cosmosdb create \
         --name $cosmos_account_name \
         --resource-group $cosmos_group_name \
@@ -45,6 +46,7 @@ cosmos_db_exists=$(az cosmosdb database exists \
     --resource-group-name $cosmos_group_name \
     --key $cosmos_account_key \
     --output tsv \
+    2> /dev/null \
     )
 
 if [ "x$cosmos_db_exists" == "xfalse" ]; then
@@ -75,6 +77,7 @@ cosmos_collection_exists=$(az cosmosdb collection exists \
     --resource-group-name $cosmos_group_name \
     --key $cosmos_account_key \
     --output tsv \
+    2> /dev/null \
     )
 
 if [ "x$cosmos_collection_exists" == "xfalse" ]; then
