@@ -17,7 +17,7 @@ def handler(eventData):
     print(list(eventData.body))
 
 async def pump(receiver):
-    await receiver.receive(callback=handler)
+    await receiver.receive(callback=handler, timeout=0)
 
 def readEnv():
     global namespace_name, saspolicy_name, saspolicy_secret, \
