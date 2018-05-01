@@ -1,68 +1,60 @@
+#!/usr/bin/env node
+
 // Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license.
+// See LICENSE file in the project root for full license information.
 
 require('dotenv').config()
-
 const { EventHubClient, EventPosition } = require('azure-event-hubs');
-const partitionCount = {};
+
+var namespaceName, sasPolicyName, sasPolicySecret, hubName, connectionString
 
 async function main() {
-  const { namespaceName, saspolicyName, saspolicySecret, hubName } = createConfig();
-  const connectionString = `Endpoint=sb://${namespaceName}.servicebus.windows.net/;` +
-    `SharedAccessKeyName=${saspolicyName};SharedAccessKey=${saspolicySecret}`
-  const client = EventHubClient.createFromConnectionString(connectionString, hubName);
-  console.log('Going to listen for events, CTRL+C to exit')
-  const partitionIds = await client.getPartitionIds();
-  for (const partitionId of partitionIds) {
-    console.log(`Listening on: partitionId ${partitionId}, namespace ${namespaceName}, hub ${hubName}`);
-    partitionCount[partitionId] = 0;
-    const onMessage = (eventData) => {
-      processEvent(eventData, partitionId);
-    };
-    const onError = (err) => {
-      console.log("An error occurred on the receiver ", err);
-    };
-    const options = { eventPosition: EventPosition.fromStart() };
-    // const options = { eventPosition: EventPosition.fromEnqueuedTime(Date.now()) };
-    client.receive(partitionId, onMessage, onError, options);
-  }
+    readEnv()
+
+    const client = EventHubClient.createFromConnectionString(connectionString, hubName);
+
+    console.log('Going to listen for events, CTRL+C to exit')
+    const partitionIds = await client.getPartitionIds();
+    for (const partitionId of partitionIds) {
+        console.log(`Listening on:` + 
+            `partitionId ${partitionId}, namespace ${namespaceName}, hub ${hubName}`);
+
+        const onMessage = (eventData) => {
+          logEvent(eventData);
+        };
+
+        const onError = (err) => {
+          console.log("An error occurred on the receiver ", err);
+        };
+
+        const options = { eventPosition: EventPosition.fromStart() };
+
+        client.receive(partitionId, onMessage, onError, options);
+    }
 }
 
 main().catch((err) => {
-  console.log("An error occurred while receiving messages: ", err);
+    console.log("An error occurred while receiving messages: ", err);
 });
 
-// Helper methods
+// helpers
 
-function createConfig() {
-  return {
-    namespaceName: process.env["EVENTHUB_NAMESPACE_NAME"],
-    saspolicyName: process.env["EVENTHUB_KEY_NAME"],
-    saspolicySecret: process.env["EVENTHUB_KEY_VALUE"],
-    hubName: process.env["EVENTHUB_HUB_NAME"]
-  };
+function readEnv() {
+    namespaceName = process.env["EVENTHUB_NAMESPACE_NAME"]
+    saspolicyName = process.env["EVENTHUB_KEY_NAME"]
+    saspolicySecret = process.env["EVENTHUB_KEY_VALUE"]
+    // hubName = process.env["EVENTHUB_HUB_NAME"]
+    hubName = process.env["ARM_ACTIVITYLOG_HUB_NAME"]
+    connectionString = `Endpoint=sb://${namespaceName}.servicebus.windows.net/;` +
+        `SharedAccessKeyName=${saspolicyName};SharedAccessKey=${saspolicySecret}`
 }
 
-function processEvent(eventData, partitionId) {
-  console.log(">>>>> Received message from partition id: %d, count: %d",
-    partitionId, ++partitionCount[partitionId]);
-  if (typeof eventData.body === "string")
-    console.log(eventData.body);
-  else if (eventData.body.content)
-    console.log(eventData.body.content.toString("utf8"));
-  else if (Buffer.isBuffer(eventData.body))
-    console.log(eventData.body.toString("utf8"));
+function logEvent(eventData) {
+    if (typeof eventData.body === "string")
+        console.log(eventData.body);
+    else if (eventData.body.content)
+        console.log(eventData.body.content.toString("utf8"));
+    else if (Buffer.isBuffer(eventData.body))
+        console.log(eventData.body.toString("utf8"));
 }
-
-const CtrlC = require("death");
-CtrlC((signal, err) => {
-  console.log("\nstats:");
-  console.log("--------------------------------------");
-  console.log(" PartitionId | Received Message Count ");
-  console.log("--------------------------------------");
-  for (key in partitionCount) {
-    console.log(`      ${key}      |          ${partitionCount[key]}`);
-  }
-  console.log("---------------------------------------");
-  process.exit();
-});

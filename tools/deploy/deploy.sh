@@ -1,5 +1,10 @@
 #! /bin/bash
 
+echo "importing env vars from .env (first)"
+set -o allexport
+source .env
+set +o allexport
+
 # globals
 export DEPLOY_TOOLS_DIR=$(dirname "${BASH_SOURCE[0]}")
 export ROOT_DIR="$(cd "${DEPLOY_TOOLS_DIR}/../.." && pwd)"
@@ -7,12 +12,6 @@ export ROOT_DIR="$(cd "${DEPLOY_TOOLS_DIR}/../.." && pwd)"
 export DEFAULT_LOCATION=westus2
 export DEFAULT_GROUP_NAME=$EVENTHUB_GROUP_NAME
 export CLEANUP=0
-
-echo "importing env vars from .env (loaded last)"
-set -o allexport
-source .env
-set +o allexport
-
 
 # event hubs
 echo creating Event Hubs namespace, sas_policy, hub, diag_settings

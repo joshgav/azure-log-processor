@@ -7,14 +7,15 @@ PYTHON_PATH = test/receiver-py/
 GO = go
 NODE = node
 NPM = npm
-PYTHON = python
+PYTHON = python3
+PIP = pip3
 
-deploy: dep
+deploy:
 	$(BASE)/tools/deploy/deploy.sh
 
 build: receivers
 
-receivers: receiver-go receiver-node
+receivers: receiver-go receiver-node receiver-py
 
 receiver-go: dep
 	cd $(BASE) && $(GO) build -o $(BASE)/dist/receiver-go ./$(GO_PATH)
@@ -31,5 +32,6 @@ npm: $(BASE)
 	cd $(BASE)/$(NODE_PATH) && $(NPM) install
 
 pip: $(BASE)
+	cd $(BASE)/$(PYTHON_PATH) && $(PIP) install -r requirements.txt
 
 .PHONY: deploy build receivers receiver-go receiver-node receiver-py dep npm pip
