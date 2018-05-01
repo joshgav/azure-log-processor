@@ -6,5 +6,5 @@
 1. `make deploy`
 1. `make build`
 1. `./dist/receiver-go`
-1. `node ./test/receiver-node`
-1. `python3 ./test/receiver-py/main.py`
+1. `./test/receiver-node/index.js`
+1. `./test/receiver-py/main.py`
