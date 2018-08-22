@@ -1,17 +1,17 @@
 # storage, called from deploy.sh with env vars set
 echo creating storage account, container, diagsettings
-storage_group_name=$DEFAULT_GROUP_NAME
-storage_account_name=$STORAGE_ACCOUNT_NAME
-storage_container_name=root
-storage_diagsettings_name=storage-diag-settings
+base_name=${AZURE_BASE_NAME}
+storage_group_name=${base_name}-storage
+storage_account_name="$(echo ${base_name} | sed 's/[- _]//g')stor"
+storage_container_name=origin
+storage_diagsettings_name=storage-diagsettings
 
 storage_account_id=$(az storage account create \
     --name $storage_account_name \
     --resource-group $storage_group_name \
-    --location $DEFAULT_LOCATION \
+    --location $location \
     --default-action Allow \
-    --output tsv --query id \
-)
+    --output tsv --query id)
 echo created: $storage_account_id
 
 az storage container create \
@@ -19,8 +19,8 @@ az storage container create \
     --account-name $storage_account_name \
     --output tsv --query id
 
-storage_logs_json=$(cat "$ROOT_DIR/specs/storage.logs")
-storage_metrics_json=$(cat "$ROOT_DIR/specs/storage.metrics")
+storage_logs_json=$(cat "${__root}/specs/storage.logs")
+storage_metrics_json=$(cat "${__root}/specs/storage.metrics")
 
 resource_uri=$storage_account_id
 settings_name=$storage_diagsettings_name
@@ -29,8 +29,8 @@ metrics_json=$storage_metrics_json
 az monitor diagnostic-settings create \
     --resource $resource_uri \
     --name $settings_name \
-    --event-hub $MONITOR_HUB_NAME \
-    --event-hub-rule $MONITOR_SASPOLICY_ID \
+    --event-hub $monitor_hub_name \
+    --event-hub-rule $monitor_policy_id \
     --logs "$logs_json" \
     --metrics "$metrics_json" \
     --query id --output tsv

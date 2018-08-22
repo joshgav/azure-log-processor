@@ -1,37 +1,15 @@
 PACKAGE   = github.com/joshgav/azure-log-processor
 BASE      = $(GOPATH)/src/$(PACKAGE)
-NODE_PATH = test/receiver-node/
-GO_PATH   = test/receiver-go/
-PYTHON_PATH = test/receiver-py/
-
 GO = go
-NODE = node
-NPM = npm
-PYTHON = python3
-PIP = pip3
 
-deploy:
-	$(BASE)/tools/deploy/deploy.sh
+deployment:
+	$(BASE)/scripts/deploy.sh
 
-build: receivers
+receiver: dep
+	cd $(BASE) && $(GO) build -o $(BASE)/out/receiver .
 
-receivers: receiver-go receiver-node receiver-py
-
-receiver-go: dep
-	cd $(BASE) && $(GO) build -o $(BASE)/dist/receiver-go ./$(GO_PATH)
-
-receiver-node: npm
-
-receiver-py: pip
-
-dep: $(BASE)
-	go get -u github.com/golang/dep
+dep:
+	go get -u github.com/golang/dep/cmd/dep
 	cd $(BASE) && dep ensure
 
-npm: $(BASE)
-	cd $(BASE)/$(NODE_PATH) && $(NPM) install
-
-pip: $(BASE)
-	cd $(BASE)/$(PYTHON_PATH) && $(PIP) install -r requirements.txt
-
-.PHONY: deploy build receivers receiver-go receiver-node receiver-py dep npm pip
+.PHONY: dep deployment receiver

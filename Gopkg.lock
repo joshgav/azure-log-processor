@@ -2,6 +2,7 @@
 
 
 [[projects]]
+  digest = "1:33a6b5e53095d9389a1b04c95fce7fa3ca0f70ac8e02d91f12bd2a09831f0767"
   name = "github.com/Azure/azure-amqp-common-go"
   packages = [
     ".",
@@ -15,93 +16,144 @@
     "persist",
     "rpc",
     "sas",
-    "uuid"
+    "uuid",
   ]
-  revision = "609551be1d31bdc8c3f7c9385c0aaf31bf6ea006"
-  version = "v0.3.2"
+  pruneopts = ""
+  revision = "e05d7e9b03e1fd3a074d0f0b819bad445e3a0a69"
+  version = "v0.6.0"
 
 [[projects]]
+  digest = "1:d51fa7889d43c3f2cebbc0eeeb5dbd87dfb6731d055be14f71f8e6d04a23b6a1"
   name = "github.com/Azure/azure-event-hubs-go"
   packages = [
     ".",
     "internal",
-    "mgmt"
+    "mgmt",
   ]
-  revision = "892a94aab96d197f3cfca540f71d76c7de5a16f6"
-  version = "v0.2.1"
+  pruneopts = ""
+  revision = "fbff7e5d87fa647a80ea5059107c7309ac391b6c"
+  version = "v0.4.0"
 
 [[projects]]
+  digest = "1:9b3345d9211757405d1cfb9cb5a8c3b04298105e8877cbe7eed48b07cf5cb91d"
+  name = "github.com/Azure/azure-sdk-for-go"
+  packages = [
+    "services/eventhub/mgmt/2017-04-01/eventhub",
+    "version",
+  ]
+  pruneopts = ""
+  revision = "4e8cbbfb1aeab140cd0fa97fd16b64ee18c3ca6a"
+  version = "v19.1.0"
+
+[[projects]]
+  digest = "1:94ef971d1e136d4aad4bc82b1e297e99f2b667e95ac2b31d2eb61287090f6d6a"
   name = "github.com/Azure/go-autorest"
   packages = [
     "autorest",
     "autorest/adal",
     "autorest/azure",
-    "autorest/date"
+    "autorest/azure/auth",
+    "autorest/date",
+    "autorest/to",
+    "autorest/validation",
+    "logger",
+    "version",
   ]
-  revision = "1ff28809256a84bb6966640ff3d0371af82ccba4"
-  version = "v10.6.2"
+  pruneopts = ""
+  revision = "39013ecb48eaf6ced3f4e3e1d95515140ce6b3cf"
+  version = "v10.15.2"
 
 [[projects]]
+  digest = "1:6098222470fe0172157ce9bbef5d2200df4edde17ee649c5d6e48330e4afa4c6"
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
+  pruneopts = ""
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:7f175a633086a933d1940a7e7dc2154a0070a7c25fb4a2f671f3eef1a34d1fd7"
+  name = "github.com/dimchansky/utfbom"
+  packages = ["."]
+  pruneopts = ""
+  revision = "5448fe645cb1964ba70ac8f9f2ffe975e61a536c"
+
+[[projects]]
+  digest = "1:442baaf193e432b3432e26465fb36aed31484866ddb0ee11f68caceb130e317e"
   name = "github.com/joho/godotenv"
   packages = ["."]
+  pruneopts = ""
   revision = "a79fa1e548e2c689c241d10173efd51e5d689d5b"
   version = "v1.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:f43ed2c836208c14f45158fd01577c985688a4d11cf9fd475a939819fef3b321"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "00c29f56e2386353d58c599509e8dc3801b0d716"
+  pruneopts = ""
+  revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
 
 [[projects]]
+  digest = "1:78fb99d6011c2ae6c72f3293a83951311147b12b06a5ffa43abf750c4fab6ac5"
   name = "github.com/opentracing/opentracing-go"
   packages = [
     ".",
     "ext",
-    "log"
+    "log",
   ]
+  pruneopts = ""
   revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
   version = "v1.0.2"
 
 [[projects]]
+  digest = "1:7365acd48986e205ccb8652cc746f09c8b7876030d53710ea6ef7d0bd0dcd7ca"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = ""
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:793a79198b755828dec284c6f1325e24e09186f1b7ba818b65c7c35104ed86eb"
   name = "golang.org/x/crypto"
   packages = [
     "pkcs12",
-    "pkcs12/internal/rc2"
+    "pkcs12/internal/rc2",
   ]
-  revision = "b0697eccbea9adec5b7ba8008f4c33d98d733388"
+  pruneopts = ""
+  revision = "614d502a4dac94afa3a6ce146bd1736da82514c6"
 
 [[projects]]
   branch = "master"
+  digest = "1:7a1f3a425a5c3cbef7ff19f11aeef1b3c057a71b4df7f396af5c62cd220ba120"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
+  pruneopts = ""
+  revision = "922f4815f713f213882e8ef45e0d315b164d705c"
 
 [[projects]]
-  branch = "master"
+  digest = "1:bc97ca9b74ce5988129fdfce385b9d9914ff23df09929f7bb5dbc6aa406bb5e7"
   name = "pack.ag/amqp"
   packages = [
     ".",
-    "internal/testconn"
+    "internal/testconn",
   ]
-  revision = "1961b4812356984db063a6cb3419b70d4375383b"
+  pruneopts = ""
+  revision = "5dba116cc9e06d56dbd69570b1c4048b06e71b6f"
+  version = "v0.6.3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3ac789946b7e1fc46f635ab0cfb9fed1293d25c84e78195204bc1647b94f9309"
+  input-imports = [
+    "github.com/Azure/azure-amqp-common-go/sas",
+    "github.com/Azure/azure-event-hubs-go",
+    "github.com/Azure/azure-sdk-for-go/services/eventhub/mgmt/2017-04-01/eventhub",
+    "github.com/Azure/go-autorest/autorest/azure/auth",
+    "github.com/joho/godotenv",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
